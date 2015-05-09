@@ -13,21 +13,42 @@ from time import sleep
 import locale
 
 locale.setlocale(locale.LC_ALL, '')
-default_line_time = 1
+default_line_time = 0.5
 
-presentation_content = [{"content" : [{"content":"test", "attribute" : ""}, {"content" : "你好世界" , "attribute" : ""}], "attribute" : "body"}, {"content" : [{"content" : "int a;", "attribute" : ""}, {"content" : "int b;", "attribute" : ""}], "attribute" : "code"}, {"content" : [{"content" : "scu.jpg", "attribute" : ""}], "attribute" : "image"}, {"content" : [{"content" : "hello world", "attribute" : ""}], "attribute" : "session"}]
+presentation_content = [{"content" : [{"content":"test", "attribute" : ""}, {"content" : "你好世界" , "attribute" : ""}], "attribute" : "body"}, {"content" : [{"content" : "public static void main(String argv) {", "attribute" : ""}, {"content" : "    int a;", "attribute" : ""}, {"content" : "    int b;", "attribute" : ""}], "attribute" : "code"}, {"content" : [{"content" : "scu.jpg", "attribute" : ""}], "attribute" : "image"}, {"content" : [{"content" : "Thank you!", "attribute" : ""}], "attribute" : "session"}]
 
 class TerminalPresentation:
     def __init__(self):
         self.currentpath = os.getcwd()
         self.screen = curses.initscr()
+        curses.noecho()
         curses.cbreak()
         self.height, self.width = self.screen.getmaxyx()
-        self.show_str(" ", 0, True)
-        for i in presentation_content:
-            self.show_page(i)
-        self.screen.getch()
+        self.show_str("tP by jinsheng, press 'j' to continue", 0, False)
+        self.start()
+        self.__reset_background()
         curses.endwin()
+
+    def start(self):
+        key = 0
+        page_size = len(presentation_content)
+        current_page = -1
+        while True:
+            if key == ord('q'):
+                break
+            elif key == ord('j'):
+                if current_page < page_size - 1:
+                    current_page += 1
+                self.show_page(presentation_content[current_page])
+            elif key == ord('k'):
+                if current_page > 0:
+                    current_page -= 1
+                elif current_page == -1:
+                    current_page = 0
+                self.show_page(presentation_content[current_page])
+
+
+            key = self.screen.getch()
 
     def show_page(self, page_info):
         page_attribute = page_info["attribute"]
@@ -35,19 +56,48 @@ class TerminalPresentation:
         self.__reset_background()
         self.__clr()
         if page_attribute == "session":
-            start_y = self.__get_start_y(len(page_content) + 2)
+            start_y = self.__get_start_y(len(page_content) + 4)
             self.show_str("======❧❦☙======", start_y, False)
-            self.show_str("======❧❦☙======", start_y + len(page_content) + 1, False)
+            self.show_str("======❧❦☙======", start_y + len(page_content) + 3, False)
             for i in range(0, len(page_content)):
                 content_txt = page_content[i]["content"]
-                self.show_str(content_txt, start_y + i + 1, True)
-        if page_attribute == "image":
+                self.show_str(content_txt, start_y + i + 2, True)
+        elif page_attribute == "image":
             image_path = page_info["content"][0]["content"]
             self.__set_background(image_path)
+
+        elif page_attribute == "body":
+            start_y = self.__get_start_y(len(page_content))
+            self.show_str("======❧❦☙======", start_y, False)
+            for i in range(0, len(page_content)):
+                content_txt = page_content[i]["content"]
+                self.show_str(content_txt, start_y + i, True)
+
+        elif page_attribute == "code":
+            start_y = self.__get_start_y(len(page_content))
+            max_len = 0
+            max_len_index = 0
+            for i in range(0, len(page_content)):
+                content_txt = page_content[i]["content"]
+                code_len = len(content_txt)
+                if code_len > max_len:
+                    max_len = code_len
+                    max_len_index = i
+            start_x = self.__get_start_x(page_content[max_len_index]["content"])
+            for i in range(0, len(page_content)):
+                content_txt = page_content[i]["content"]
+                self.show_code(content_txt, start_y + i, start_x, True)
+
 
 
     def show_str(self, printstr, height, sleep):
         start_x = self.__get_start_x(printstr)
+        if sleep == True:
+            self.__print_with_sleep(printstr, start_x, height)
+        else:
+            self.__print_without_sleep(printstr, start_x, height)
+
+    def show_code(self, printstr, height, start_x, sleep):
         if sleep == True:
             self.__print_with_sleep(printstr, start_x, height)
         else:
