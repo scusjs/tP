@@ -15,7 +15,7 @@ import locale
 locale.setlocale(locale.LC_ALL, '')
 default_line_time = 0.5
 
-presentation_content = [{"content" : [{"content":"test", "attribute" : ""}, {"content" : "你好世界" , "attribute" : ""}], "attribute" : "body"}, {"content" : [{"content" : "public static void main(String argv) {", "attribute" : ""}, {"content" : "    int a;", "attribute" : ""}, {"content" : "    int b;", "attribute" : ""}], "attribute" : "code"}, {"content" : [{"content" : "scu.jpg", "attribute" : ""}], "attribute" : "image"}, {"content" : [{"content" : "Thank you!", "attribute" : ""}], "attribute" : "session"}]
+presentation_content = [{"content" : [{"content":"test", "attribute" : ""}, {"content" : "你好世界" , "attribute" : ""}], "attribute" : "body"}, {"content" : [{"content" : "public static void main(String argv[]) {", "attribute" : ""}, {"content" : "    int a;", "attribute" : ""}, {"content" : "    int b;", "attribute" : ""}], "attribute" : "code"}, {"content" : [{"content" : "scu.jpg", "attribute" : ""}], "attribute" : "image"}, {"content" : [{"content" : "Thank you!", "attribute" : ""}], "attribute" : "session"}]
 
 class TerminalPresentation:
     def __init__(self):
