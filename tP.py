@@ -25,9 +25,11 @@ class TerminalPresentation:
         self.show_str("test", 5, True)
         self.show_str("你好世界", 6, True)
         self.show_str("======❧❦☙=====", 7, True)
+        self.__clr()
         self.__set_background("scu.jpg")
         sleep(2)
         self.__reset_background()
+        self.show_str("这是第二页", 7, True)
         self.screen.getch()
         curses.endwin()
 
@@ -50,7 +52,9 @@ class TerminalPresentation:
     def __print_without_sleep(self, printstr, start_x, start_y):
         self.screen.addstr(start_y, start_x, printstr)
 
-
+    def __clr(self):
+        self.screen.clear()
+        self.screen.refresh()
 
     def __print_char(self, y, x, char):
         self.screen.addstr(y, x, char)
