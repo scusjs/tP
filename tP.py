@@ -32,15 +32,18 @@ class TerminalPresentation:
     def show_page(self, page_info):
         page_attribute = page_info["attribute"]
         page_content = page_info["content"]
+        self.__reset_background()
         self.__clr()
-        #if page_attribute == "session":
-        if True:
+        if page_attribute == "session":
             start_y = self.__get_start_y(len(page_content) + 2)
             self.show_str("======❧❦☙======", start_y, False)
             self.show_str("======❧❦☙======", start_y + len(page_content) + 1, False)
             for i in range(0, len(page_content)):
                 content_txt = page_content[i]["content"]
                 self.show_str(content_txt, start_y + i + 1, True)
+        if page_attribute == "image":
+            image_path = page_info["content"][0]["content"]
+            self.__set_background(image_path)
 
 
     def show_str(self, printstr, height, sleep):
