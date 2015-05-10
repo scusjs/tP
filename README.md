@@ -1,6 +1,13 @@
 # tP
 a ha~ rolling my own
 
+Python渣，代码很丑，只是赶出来做软件之英用的，两天多造出来的轮子不要太在意啊。
+
+如果有时间会加一些特效的，duang~duang~的
+
+当然有时间也会适配其他终端和系统，目前只支持OS X + iTerm2
+
+
 environment
 -----------
 iTerm2 + python3
