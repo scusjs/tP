@@ -9,6 +9,7 @@
 
 import curses
 import os
+import sys
 from time import sleep
 import locale
 from content import Content
@@ -156,4 +157,4 @@ class TerminalPresentation:
 
 
 if __name__ == "__main__":
-    tp = TerminalPresentation("./example/example")
+    tp = TerminalPresentation(sys.argv[1])

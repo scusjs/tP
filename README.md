@@ -8,7 +8,8 @@ iTerm2 + python3
 
 run
 -----------
-    python3 tP.py
+    python3 tP.py ./example/example
+    j/k/上/下/左/右键控制播放
 
 python2的问题找时间再解决吧：）
 
