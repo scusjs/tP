@@ -15,12 +15,13 @@ import locale
 locale.setlocale(locale.LC_ALL, '')
 default_line_time = 0.5
 
-presentation_content = [{"content" : [{"content":"test", "attribute" : ""}, {"content" : "你好世界" , "attribute" : ""}], "attribute" : "body"}, {"content" : [{"content" : "public static void main(String argv[]) {", "attribute" : ""}, {"content" : "    int a;", "attribute" : ""}, {"content" : "    int b;", "attribute" : ""}], "attribute" : "code"}, {"content" : [{"content" : "scu.jpg", "attribute" : ""}], "attribute" : "image"}, {"content" : [{"content" : "Thank you!", "attribute" : ""}], "attribute" : "session"}]
+presentation_content = [{"content" : [{"content":"test", "attribute" : []}, {"content" : "你好世界" , "attribute" : []}], "attribute" : ["body"]}, {"content" : [{"content" : "public static void main(String argv[]) {", "attribute" : []}, {"content" : "    int a;", "attribute" : []}, {"content" : "    int b;", "attribute" : []}], "attribute" : ["code"]}, {"content" : [{"content" : "scu.jpg", "attribute" : []}], "attribute" : ["image"]}, {"content" : [{"content" : "Thank you!", "attribute" : []}], "attribute" : ["session", "flash"]}]
 
 class TerminalPresentation:
     def __init__(self):
         self.currentpath = os.getcwd()
         self.screen = curses.initscr()
+        self.screen.keypad(True)
         curses.noecho()
         curses.cbreak()
         self.height, self.width = self.screen.getmaxyx()
@@ -36,11 +37,11 @@ class TerminalPresentation:
         while True:
             if key == ord('q'):
                 break
-            elif key == ord('j'):
+            elif key in (ord('j'), curses.KEY_DOWN, curses.KEY_RIGHT):
                 if current_page < page_size - 1:
                     current_page += 1
                 self.show_page(presentation_content[current_page])
-            elif key == ord('k'):
+            elif key in (ord('k'), curses.KEY_UP, curses.KEY_LEFT):
                 if current_page > 0:
                     current_page -= 1
                 elif current_page == -1:
@@ -55,25 +56,25 @@ class TerminalPresentation:
         page_content = page_info["content"]
         self.__reset_background()
         self.__clr()
-        if page_attribute == "session":
+        if "session" in page_attribute:
             start_y = self.__get_start_y(len(page_content) + 4)
             self.show_str("======❧❦☙======", start_y, False)
             self.show_str("======❧❦☙======", start_y + len(page_content) + 3, False)
             for i in range(0, len(page_content)):
                 content_txt = page_content[i]["content"]
                 self.show_str(content_txt, start_y + i + 2, True)
-        elif page_attribute == "image":
+        elif "image" in page_attribute :
             image_path = page_info["content"][0]["content"]
             self.__set_background(image_path)
 
-        elif page_attribute == "body":
+        elif "body" in page_attribute :
             start_y = self.__get_start_y(len(page_content))
             self.show_str("======❧❦☙======", start_y, False)
             for i in range(0, len(page_content)):
                 content_txt = page_content[i]["content"]
                 self.show_str(content_txt, start_y + i, True)
 
-        elif page_attribute == "code":
+        elif "code" in page_attribute :
             start_y = self.__get_start_y(len(page_content))
             max_len = 0
             max_len_index = 0
@@ -87,8 +88,15 @@ class TerminalPresentation:
             for i in range(0, len(page_content)):
                 content_txt = page_content[i]["content"]
                 self.show_code(content_txt, start_y + i, start_x, True)
+        self.__page_duang(page_attribute)
 
+    #页面特效判断
+    def __page_duang(self, attribute):
+        if "flash" in attribute:
+            curses.flash()
 
+    def __content_duang(self, attribute):
+        pass
 
     def show_str(self, printstr, height, sleep):
         start_x = self.__get_start_x(printstr)
