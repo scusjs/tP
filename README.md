@@ -11,3 +11,21 @@ run
     python3 tP.py
 
 python2的问题找时间再解决吧：）
+
+
+Example
+------------
+见./example/example
+
+目前可用的一些东西：
+
+page 类别
+	
+	正文：body
+	代码：code
+	分类：session
+	图片：image
+	
+page 属性
+
+	闪烁：flash

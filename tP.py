@@ -11,14 +11,16 @@ import curses
 import os
 from time import sleep
 import locale
+from content import Content
 
 locale.setlocale(locale.LC_ALL, '')
 default_line_time = 0.5
 
-presentation_content = [{"content" : [{"content":"test", "attribute" : []}, {"content" : "你好世界" , "attribute" : []}], "attribute" : ["body"]}, {"content" : [{"content" : "public static void main(String argv[]) {", "attribute" : []}, {"content" : "    int a;", "attribute" : []}, {"content" : "    int b;", "attribute" : []}], "attribute" : ["code"]}, {"content" : [{"content" : "scu.jpg", "attribute" : []}], "attribute" : ["image"]}, {"content" : [{"content" : "Thank you!", "attribute" : []}], "attribute" : ["session", "flash"]}]
-
 class TerminalPresentation:
-    def __init__(self):
+    def __init__(self, file_path):
+        content = Content(file_path)
+        self.image_path = os.path.dirname(file_path)
+        self.presentation_content = content.get_content_list()
         self.currentpath = os.getcwd()
         self.screen = curses.initscr()
         self.screen.keypad(True)
@@ -32,7 +34,7 @@ class TerminalPresentation:
 
     def start(self):
         key = 0
-        page_size = len(presentation_content)
+        page_size = len(self.presentation_content)
         current_page = -1
         while True:
             if key == ord('q'):
@@ -40,13 +42,13 @@ class TerminalPresentation:
             elif key in (ord('j'), curses.KEY_DOWN, curses.KEY_RIGHT):
                 if current_page < page_size - 1:
                     current_page += 1
-                self.show_page(presentation_content[current_page])
+                self.show_page(self.presentation_content[current_page])
             elif key in (ord('k'), curses.KEY_UP, curses.KEY_LEFT):
                 if current_page > 0:
                     current_page -= 1
                 elif current_page == -1:
                     current_page = 0
-                self.show_page(presentation_content[current_page])
+                self.show_page(self.presentation_content[current_page])
 
 
             key = self.screen.getch()
@@ -65,11 +67,10 @@ class TerminalPresentation:
                 self.show_str(content_txt, start_y + i + 2, True)
         elif "image" in page_attribute :
             image_path = page_info["content"][0]["content"]
-            self.__set_background(image_path)
+            self.__set_background(os.path.join(self.image_path, image_path))
 
         elif "body" in page_attribute :
             start_y = self.__get_start_y(len(page_content))
-            self.show_str("======❧❦☙======", start_y, False)
             for i in range(0, len(page_content)):
                 content_txt = page_content[i]["content"]
                 self.show_str(content_txt, start_y + i, True)
@@ -113,11 +114,11 @@ class TerminalPresentation:
 
     def __print_with_sleep(self, printstr, start_x, start_y):
         strlen = len(printstr)
+        ch_placeholder = 0
         for i in range(0, strlen):
+            self.__print_char(start_y, start_x + i + ch_placeholder, printstr[i])
             if self.__is_cn_char(printstr[i]):
-                self.__print_char(start_y, start_x + i * 2, printstr[i])
-            else:
-                self.__print_char(start_y, start_x + i, printstr[i])
+                ch_placeholder += 1
             sleep(float(default_line_time) / strlen)
 
     def __print_without_sleep(self, printstr, start_x, start_y):
@@ -155,4 +156,4 @@ class TerminalPresentation:
 
 
 if __name__ == "__main__":
-    tp = TerminalPresentation()
+    tp = TerminalPresentation("./example/example")

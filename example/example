@@ -1,0 +1,18 @@
+page:body
+content:
+你好世界~
+content:
+hello world
+page:code
+content:
+public static void main(String argv[]){
+    int a;
+    int b;
+    system.out.println(a + b);
+}
+page:image
+content:
+scu.jpg
+page:session,flash
+content:
+Thank you!
