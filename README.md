@@ -38,4 +38,4 @@ page 属性
 
 	闪烁：flash
 	
-![image](http://github.com/scusjs/tP/raw/master/out.gif)
+![image](https://raw.githubusercontent.com/scusjs/tP/master/out.gif)
