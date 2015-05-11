@@ -37,3 +37,5 @@ page 类别
 page 属性
 
 	闪烁：flash
+	
+![image](http://github.com/scusjs/tP/raw/master/out.jpg)
