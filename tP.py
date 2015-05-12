@@ -23,13 +23,16 @@ class TerminalPresentation:
         self.image_path = os.path.dirname(file_path)
         self.presentation_content = content.get_content_list()
         self.currentpath = os.getcwd()
-        self.screen = curses.initscr()
-        self.screen.keypad(True)
-        curses.noecho()
-        curses.cbreak()
-        self.height, self.width = self.screen.getmaxyx()
-        self.show_str("tP by jinsheng, press 'j' to continue", 0, False)
-        self.start()
+        try:
+            self.screen = curses.initscr()
+            self.screen.keypad(True)
+            curses.noecho()
+            curses.cbreak()
+            self.height, self.width = self.screen.getmaxyx()
+            self.show_str("tP by jinsheng, press 'j' to continue", 0, False)
+            self.start()
+        except KeyboardInterrupt:
+            pass
         self.__reset_background()
         curses.endwin()
 
