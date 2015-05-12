@@ -61,7 +61,7 @@ class TerminalPresentation:
         page_attribute = page_info["attribute"]
         page_content = page_info["content"]
         self.__reset_background()
-        self.__clr()
+        self.__page_duang(page_attribute)
         if "session" in page_attribute:
             start_y = self.__get_start_y(len(page_content) + 4)
             self.show_str("======❧❦☙======", start_y, False)
@@ -73,11 +73,11 @@ class TerminalPresentation:
             image_path = page_info["content"][0]["content"]
             self.__set_background(os.path.join(self.image_path, image_path))
 
-        elif "body" in page_attribute :
+        elif "body" in page_attribute:
             start_y = self.__get_start_y(len(page_content))
             for i in range(0, len(page_content)):
                 content_txt = page_content[i]["content"]
-                self.show_str(content_txt, start_y + i, True)
+                self.__content_duang(content_txt, page_content[i]["attribute"], start_y + i)
 
         elif "code" in page_attribute :
             start_y = self.__get_start_y(len(page_content))
@@ -93,14 +93,24 @@ class TerminalPresentation:
             for i in range(0, len(page_content)):
                 content_txt = page_content[i]["content"]
                 self.show_code(content_txt, start_y + i, start_x, True)
-        self.__page_duang(page_attribute)
 
     #页面特效判断
     def __page_duang(self, attribute):
         if "flash" in attribute:
+            self.__clr()
             curses.flash()
+        if "slip" in attribute:
+            self.__slip_into()
+        self.__clr()
 
-    def __content_duang(self, attribute):
+    def __content_duang(self, content_txt, attribute, start_y):
+        if "printer" in attribute:
+            self.show_str(content_txt, start_y, True)
+        else:
+            self.show_str(content_txt, start_y, False)
+
+        if "flash" in attribute:
+            curses.flash()
         pass
 
     def show_str(self, printstr, height, sleep):
@@ -127,6 +137,30 @@ class TerminalPresentation:
 
     def __print_without_sleep(self, printstr, start_x, start_y):
         self.screen.addstr(start_y, start_x, printstr)
+
+    # page slip into the screen
+    def __slip_into(self):
+        width = self.width - 1
+        height = self.height
+        while width > 1:
+            i = 0
+            while i < height - 1:
+                self.__print_without_sleep("▇", width, i)
+                i += 1
+            self.screen.refresh()
+            sleep(0.001)
+            width -= 1
+
+        width = self.width - 1
+        height = self.height
+        while width > 1:
+            i = 0
+            while i < height - 1:
+                self.__print_without_sleep(" ", width, i)
+                i += 1
+            self.screen.refresh()
+            sleep(0.001)
+            width -= 1
 
     def __clr(self):
         self.screen.clear()

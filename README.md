@@ -38,5 +38,11 @@ page 类别
 page 属性
 
 	闪烁：flash
+    滑入：slip
+
+content 属性
+
+    打字机：printer
+    
 	
 ![image](https://raw.githubusercontent.com/scusjs/tP/master/out.gif)

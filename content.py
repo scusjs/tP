@@ -43,6 +43,7 @@ class Content:
             elif file_list[i].find("content") == 0:
                 content_attribute = []
                 attribute = file_list[i].strip().split(":")[1]
+                attribute = attribute.split(",")
                 for each in attribute:
                     content_attribute.append(each)
             else:

@@ -1,9 +1,9 @@
 page:body
-content:
+content:printer
 你好世界~
 content:
 hello world
-page:code
+page:code,slip
 content:
 public static void main(String argv[]){
     int a;
