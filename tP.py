@@ -19,22 +19,25 @@ default_line_time = 0.5
 
 class TerminalPresentation:
     def __init__(self, file_path):
+        self.__init_win()
         content = Content(file_path)
         self.image_path = os.path.dirname(file_path)
         self.presentation_content = content.get_content_list()
         self.currentpath = os.getcwd()
         try:
-            self.screen = curses.initscr()
-            self.screen.keypad(True)
-            curses.noecho()
-            curses.cbreak()
-            self.height, self.width = self.screen.getmaxyx()
             self.show_str("tP by jinsheng, press 'j' to continue", 0, False)
             self.start()
         except KeyboardInterrupt:
             pass
         self.__reset_background()
         curses.endwin()
+    
+    def __init_win(self):
+        self.screen = curses.initscr()
+        self.screen.keypad(True)
+        curses.noecho()
+        curses.cbreak()
+        self.height, self.width = self.screen.getmaxyx()
 
     def start(self):
         key = 0
@@ -44,6 +47,7 @@ class TerminalPresentation:
             if key == ord('q'):
                 break
             elif key in (ord('j'), curses.KEY_DOWN, curses.KEY_RIGHT):
+                self.__page_duang_after(self.presentation_content[current_page]["attribute"])
                 if current_page < page_size - 1:
                     current_page += 1
                 self.show_page(self.presentation_content[current_page])
@@ -61,7 +65,7 @@ class TerminalPresentation:
         page_attribute = page_info["attribute"]
         page_content = page_info["content"]
         self.__reset_background()
-        self.__page_duang(page_attribute)
+        self.__page_duang_before(page_attribute)
         if "session" in page_attribute:
             start_y = self.__get_start_y(len(page_content) + 4)
             self.show_str("======❧❦☙======", start_y, False)
@@ -95,13 +99,18 @@ class TerminalPresentation:
                 self.show_code(content_txt, start_y + i, start_x, True)
 
     #页面特效判断
-    def __page_duang(self, attribute):
+    def __page_duang_before(self, attribute):
         if "flash" in attribute:
             self.__clr()
             curses.flash()
         if "slip" in attribute:
             self.__slip_into()
         self.__clr()
+
+    def __page_duang_after(self, attribute):
+        if "printtonext" in attribute:
+            height = self.height
+            self.__print_with_sleep(":next page", 0, height - 1)
 
     def __content_duang(self, content_txt, attribute, start_y):
         if "printer" in attribute:
