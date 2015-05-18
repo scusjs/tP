@@ -31,6 +31,8 @@ class Content:
         page_attribute = []
         content_attribute = []
         for i in range(0, len(file_list)):
+            if file_list[i].find("#") == 0:
+                continue
             if file_list[i].find("page") == 0:
                 if len(page_list) != 0:
                     content_list.append({"content" : page_list, "attribute" : page_attribute})

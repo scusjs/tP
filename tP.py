@@ -90,11 +90,16 @@ class TerminalPresentation:
             for i in range(0, len(page_content)):
                 content_txt = page_content[i]["content"]
                 code_len = len(content_txt)
+                for index in content_txt:
+                    if self.__is_cn_char(index):
+                        code_len += 1
                 if code_len > max_len:
                     max_len = code_len
                     max_len_index = i
             start_x = self.__get_start_x(page_content[max_len_index]["content"])
             for i in range(0, len(page_content)):
+                if "getch" in page_content[i]["attribute"]:
+                    self.screen.getch()
                 content_txt = page_content[i]["content"]
                 self.show_code(content_txt, start_y + i, start_x, True)
 
@@ -113,6 +118,8 @@ class TerminalPresentation:
             self.__print_with_sleep(":next page", 0, height - 1)
 
     def __content_duang(self, content_txt, attribute, start_y):
+        if "getch" in attribute:
+                self.screen.getch()
         if "printer" in attribute:
             self.show_str(content_txt, start_y, True)
         else:
@@ -120,7 +127,6 @@ class TerminalPresentation:
 
         if "flash" in attribute:
             curses.flash()
-        pass
 
     def show_str(self, printstr, height, sleep):
         start_x = self.__get_start_x(printstr)
@@ -145,7 +151,15 @@ class TerminalPresentation:
             sleep(float(default_line_time) / strlen)
 
     def __print_without_sleep(self, printstr, start_x, start_y):
-        self.screen.addstr(start_y, start_x, printstr)
+        if self.__check_out_of_screen(start_x, start_y):
+            self.screen.addstr(start_y, start_x, printstr)
+
+    def __check_out_of_screen(self, x, y):
+        if x < 0 or y < 0:
+            return False
+        elif x >= self.width or y >= self.height:
+            return False
+        return True
 
     # page slip into the screen
     def __slip_into(self):
@@ -176,8 +190,9 @@ class TerminalPresentation:
         self.screen.refresh()
 
     def __print_char(self, y, x, char):
-        self.screen.addstr(y, x, char)
-        self.screen.refresh()
+        if self.__check_out_of_screen(x, y):
+            self.screen.addstr(y, x, char)
+            self.screen.refresh()
 
     def __set_background(self, path):
         set_back_str = "osascript -e \'tell application \"iTerm\" to set background image path of current session of current terminal to \"" + self.currentpath + "/" +path + "\"\'"
