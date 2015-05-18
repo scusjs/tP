@@ -203,7 +203,8 @@ class TerminalPresentation:
         os.system(set_back_str)
 
     def __is_cn_char(self, i):
-            return 0x4e00<=ord(i)<0x9fa6
+            #return 0x4e00<=ord(i)<0x9fa6
+            return not ord(i) < 0x3000
 
     def __get_start_x(self, printstr):
         strlen = len(printstr)
