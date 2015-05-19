@@ -119,7 +119,13 @@ class TerminalPresentation:
 
     def __content_duang(self, content_txt, attribute, start_y):
         if "getch" in attribute:
-                self.screen.getch()
+            self.screen.getch()
+        if "image" in attribute:
+            self.screen.getch()
+            self.__set_background(os.path.join(self.image_path, content_txt))
+            self.screen.getch()
+            self.__reset_background()
+            return
         if "printer" in attribute:
             self.show_str(content_txt, start_y, True)
         else:
